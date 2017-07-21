@@ -15,20 +15,38 @@ import java.util.Scanner;
 
 /**
  *
- * @author mayza
+ * @author Mayza Hirose
  */
 public class Main {
 
+    static List<Vertice> verticesIniciais = new ArrayList<>();
     static boolean criterioDeParada = false;
+    static int qtdVertices;
+    static int qtdMedianas;
+    
     static List<Vertice> populacao = new ArrayList<>();
+    
     static String caso = "SCJ1.dat";
     
-    public static void main(String[] args) throws FileNotFoundException, IOException {
+    public static void main(String[] args) throws FileNotFoundException {
         Scanner in = new Scanner(new File(caso));
+        qtdVertices = in.nextInt();
+        qtdMedianas = in.nextInt();
+        
         while (in.hasNextLine()) {
-            String line = in.nextLine();
-            System.out.println(line);
+            Vertice vert = new Vertice();
+            Coordenada coord = new Coordenada(in.nextInt(), in.nextInt());
+            
+            vert.setCoordenada(coord);
+            vert.setCapacidade(in.nextInt());
+            vert.setDemanda(in.nextInt());
+            
+            verticesIniciais.add(vert);
         }
+        System.out.println("Vertices:\t" + qtdVertices);
+        System.out.println("Medianas:\t" + qtdMedianas);
+        for(Vertice v: verticesIniciais)
+            System.out.println(v.toString());
     }
     
     static void algoritmoGenetico(){
@@ -79,6 +97,48 @@ class Vertice{
     private int demanda;
     
     private List<Vertice> grupoAssociado;
+
+    //<editor-fold defaultstate="collapsed" desc=" Getters e Setters ">
+    public boolean isIsMediana() {
+        return isMediana;
+    }
+
+    public void setIsMediana(boolean isMediana) {
+        this.isMediana = isMediana;
+    }
+
+    public Coordenada getCoordenada() {
+        return coordenada;
+    }
+
+    public void setCoordenada(Coordenada coordenada) {
+        this.coordenada = coordenada;
+    }
+
+    public int getCapacidade() {
+        return capacidade;
+    }
+
+    public void setCapacidade(int capacidade) {
+        this.capacidade = capacidade;
+    }
+
+    public int getDemanda() {
+        return demanda;
+    }
+
+    public void setDemanda(int demanda) {
+        this.demanda = demanda;
+    }
+
+    public List<Vertice> getGrupoAssociado() {
+        return grupoAssociado;
+    }
+
+    public void setGrupoAssociado(List<Vertice> grupoAssociado) {
+        this.grupoAssociado = grupoAssociado;
+    }
+    //</editor-fold>
 }
 
 class Coordenada{
