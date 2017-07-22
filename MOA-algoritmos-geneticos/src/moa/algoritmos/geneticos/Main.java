@@ -7,10 +7,9 @@ package moa.algoritmos.geneticos;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.Scanner;
 
 /**
@@ -18,6 +17,9 @@ import java.util.Scanner;
  * @author Mayza Hirose
  */
 public class Main {
+    
+    static final int TAM_POPULACAO_INICIAL = 1;
+    static int id = 0;//Para fins de teste
 
     static List<Vertice> verticesIniciais = new ArrayList<>();
     static boolean criterioDeParada = false;
@@ -32,21 +34,20 @@ public class Main {
         Scanner in = new Scanner(new File(caso));
         qtdVertices = in.nextInt();
         qtdMedianas = in.nextInt();
-        
+
         while (in.hasNextLine()) {
             Vertice vert = new Vertice();
             Coordenada coord = new Coordenada(in.nextInt(), in.nextInt());
-            
+ 
+            vert.setId(id);
             vert.setCoordenada(coord);
             vert.setCapacidade(in.nextInt());
-            vert.setDemanda(in.nextInt());
+            vert.setDemanda(in.nextInt());      
+            id++;
             
             verticesIniciais.add(vert);
         }
-        System.out.println("Vertices:\t" + qtdVertices);
-        System.out.println("Medianas:\t" + qtdMedianas);
-        for(Vertice v: verticesIniciais)
-            System.out.println(v.toString());
+        algoritmoGenetico();
     }
     
     static void algoritmoGenetico(){
@@ -62,7 +63,20 @@ public class Main {
     }
 
     static void gerarPopulacaoInicial() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Solucao solucao;
+        for(int i=0;i<TAM_POPULACAO_INICIAL;i++){
+            solucao = new Solucao();
+            for(int j=0;j<qtdMedianas;j++){
+                Vertice v = new Vertice(randomMediana());
+                v.setIsMediana(true);
+                solucao.getMedianas().add(v); 
+            }
+            for(Vertice v: verticesIniciais){
+                if(!v.isIsMediana()){
+                    
+                }
+            }
+        }
     }
 
     static void avaliacao() {
@@ -88,15 +102,36 @@ public class Main {
     static void atualizacaoDaPopulacao() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+    
+    static Vertice randomMediana(){
+        Random aleatorio = new Random();
+        Vertice mediana = verticesIniciais.get(aleatorio.nextInt(verticesIniciais.size()-1));
+        System.out.println("ID: "+ mediana.getId());
+        return mediana;
+    }
 }
 
-class Vertice{
+class Vertice {
+    private int id = 0; //para fins de teste
     private boolean isMediana = false;
+    private Double somaDistancias;
     private Coordenada coordenada;
     private int capacidade;
     private int demanda;
     
-    private List<Vertice> grupoAssociado;
+    private List<Vertice> grupoAssociado = new ArrayList<>();
+    
+    //Construtor padrão
+    public Vertice(){
+        
+    }
+    
+    //Construtor de cópia
+    public Vertice(Vertice copiar){
+        this.coordenada = copiar.coordenada;
+        this.capacidade = copiar.capacidade;
+        this.demanda = copiar.demanda;
+    }
 
     //<editor-fold defaultstate="collapsed" desc=" Getters e Setters ">
     public boolean isIsMediana() {
@@ -138,12 +173,34 @@ class Vertice{
     public void setGrupoAssociado(List<Vertice> grupoAssociado) {
         this.grupoAssociado = grupoAssociado;
     }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public Double getSomaDistancias() {
+        return somaDistancias;
+    }
+
+    public void adicionaDistancia(Double somaDistancias) {
+        this.somaDistancias = this.somaDistancias + somaDistancias;
+    }
+    
     //</editor-fold>
+    
+    @Override
+    public String toString(){
+        return "x: " + this.coordenada.x() + " y: " + this.coordenada.y() + " Capacidade: " + this.capacidade + " Demanda: " + this.demanda;
+    }
 }
 
 class Coordenada{
-    public int x;
-    public int y;
+    private int x;
+    private int y;
     
     public Coordenada(){       
     }
@@ -155,4 +212,26 @@ class Coordenada{
     
     public int x(){ return x; }
     public int y(){ return y; }
+}
+
+class Solucao{
+    private List<Vertice> medianas = new ArrayList<>();
+    private Double distanciaGeral;
+
+    public List<Vertice> getMedianas() {
+        return medianas;
+    }
+
+    public void setMedianas(List<Vertice> medianas) {
+        this.medianas = medianas;
+    }
+
+    public Double getDistancia() {
+        return distanciaGeral;
+    }
+
+    public void setDistancia(Double distanciaGeral) {
+        this.distanciaGeral = this.distanciaGeral + distanciaGeral;
+    }
+    
 }
